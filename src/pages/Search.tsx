@@ -1,7 +1,7 @@
 import { useMemo, useState } from "react"
 import { SearchIcon, FileIcon, TrashIcon, StarIcon } from "lucide-react"
-import { usePocketBase } from "@/services/pocketbase-store"
-import type { ManagedFile, Folder } from "@/services/pocketbase-store"
+import { usePocketBase } from "@/services/filesys-store"
+import type { ManagedFile, Folder } from "@/services/filesys-store"
 
 export default function Search() {
   const { files, trash, folders } = usePocketBase()

@@ -22,8 +22,8 @@ import {
   XIcon,
   ArrowLeftIcon,
 } from "lucide-react"
-import { usePocketBase } from "@/services/pocketbase-store"
-import type { ManagedFile, Folder } from "@/services/pocketbase-store"
+import { usePocketBase } from "@/services/filesys-store"
+import type { ManagedFile, Folder } from "@/services/filesys-store"
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from "@/components/ui/dropdown-menu"
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from "@/components/ui/sheet"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog"

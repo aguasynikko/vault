@@ -25,7 +25,6 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
 import { useAuth } from "@/contexts/AuthContext"
-import { pb } from "@/lib/pocketbase"
 
 export function AppSidebar({ onLogout, ...props }: React.ComponentProps<typeof Sidebar> & { onLogout?: () => void }) {
   const { user: authUser } = useAuth()
@@ -38,7 +37,7 @@ export function AppSidebar({ onLogout, ...props }: React.ComponentProps<typeof S
     return {
       name: authUser.name || authUser.email?.split('@')[0] || "User",
       email: authUser.email || "",
-      avatar: authUser.avatar ? pb.files.getUrl(authUser, authUser.avatar) : ""
+      avatar: authUser.avatar || ""
     }
   }, [authUser])
 

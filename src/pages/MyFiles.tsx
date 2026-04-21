@@ -1,5 +1,5 @@
 import React, { useCallback, useMemo, useRef, useState, useEffect } from "react"
-import { usePocketBase } from "@/services/pocketbase-store"
+import { usePocketBase } from "@/services/filesys-store"
 import {
   TrashIcon,
   EyeIcon,
@@ -794,7 +794,7 @@ export default function MyFiles() {
           </AlertDialogContent>
         </AlertDialog>
         <Button variant="outline" onClick={goUp} disabled={currentFolderId === null}>
-          <ChevronLeftIcon className="mr-2 h-4 w-4" /> Up
+          <ChevronLeftIcon className="mr-2 h-4 w-4" /> Back
         </Button>
         <div className="ml-auto">
           <Input

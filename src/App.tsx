@@ -26,7 +26,7 @@ import SharedWithMe from "@/pages/SharedWithMe";
 import Favorites from "@/pages/Favorites";
 import TrashArchive from "@/pages/TrashArchive";
 import Workspaces from "@/pages/Workspaces";
-import { PocketBaseProvider } from "@/services/pocketbase-store";
+import { SupabaseProvider } from "@/services/supabase-store";
 import ColleaguesPage from "@/pages/Colleagues";
 import Recents from "@/pages/Recents";
 import SettingsPage from "@/pages/Settings";
@@ -35,38 +35,62 @@ import Search from "@/pages/Search";
 import AccountPage from "@/pages/Account";
 
 function AppContent() {
-  const { user, logout } = useAuth();
+  const { user, logout, isLoading } = useAuth();
   const [isLogin, setIsLogin] = useState(true);
-
-  if (user) {
-    const location = useLocation();
-    const pageTitle = location.pathname.startsWith("/files")
-       ? "My Vault"
-       : location.pathname.startsWith("/shared")
-       ? "Shared with Me"
-       : location.pathname.startsWith("/favorites")
-       ? "Favorites"
-       : location.pathname.startsWith("/trash")
-       ? "Trash"
-       : location.pathname.startsWith("/workspaces")
-       ? "Workspaces"
-       : location.pathname.startsWith("/team")
-       ? "Colleagues"
-       : location.pathname.startsWith("/recents")
-       ? "Recents"
-       : location.pathname.startsWith("/search")
-       ? "Search"
-       : location.pathname.startsWith("/settings")
-       ? "Settings"
-       : location.pathname.startsWith("/help")
-       ? "Help / Docs"
-       : location.pathname.startsWith("/account")
-       ? "Account"
-       : "Dashboard";
-
+  const location = useLocation();
+  
+  // Show loading screen while checking auth
+  if (isLoading) {
     return (
       <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
-        <PocketBaseProvider>
+        <div className="flex items-center justify-center min-h-screen">
+          <div className="text-center">
+            <div className="animate-spin mb-4">
+              <GalleryVerticalEnd className="size-8" />
+            </div>
+            <p>Loading...</p>
+          </div>
+        </div>
+        <div style={{
+          position: "fixed",
+          top: 16,
+          right: 16,
+          zIndex: 1000,
+        }}>
+          <ModeToggle />
+        </div>
+      </ThemeProvider>
+    )
+  }
+  
+  const pageTitle = location.pathname.startsWith("/files")
+     ? "My Vault"
+     : location.pathname.startsWith("/shared")
+     ? "Shared with Me"
+     : location.pathname.startsWith("/favorites")
+     ? "Favorites"
+     : location.pathname.startsWith("/trash")
+     ? "Trash"
+     : location.pathname.startsWith("/workspaces")
+     ? "Workspaces"
+     : location.pathname.startsWith("/team")
+     ? "Colleagues"
+     : location.pathname.startsWith("/recents")
+     ? "Recents"
+     : location.pathname.startsWith("/search")
+     ? "Search"
+     : location.pathname.startsWith("/settings")
+     ? "Settings"
+     : location.pathname.startsWith("/help")
+     ? "Help / Docs"
+     : location.pathname.startsWith("/account")
+     ? "Account"
+     : "Dashboard";
+
+  if (user) {
+    return (
+      <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
+        <SupabaseProvider>
           <SidebarProvider>
             <AppSidebar onLogout={logout} />
             <SidebarInset>
@@ -93,7 +117,7 @@ function AppContent() {
               </div>
             </SidebarInset>
           </SidebarProvider>
-        </PocketBaseProvider>
+        </SupabaseProvider>
         <div style={{
           position: "fixed",
           top: 16,

@@ -7,10 +7,10 @@ import { Card } from "@/components/ui/card"
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar"
 import { UserCircleIcon, CameraIcon } from "lucide-react"
 import { useAuth } from "@/contexts/AuthContext"
-import { pb } from "@/lib/pocketbase"
+// Using local auth context; no PocketBase
 
 export default function AccountPage() {
-  const { user } = useAuth()
+  const { user, updateProfile } = useAuth()
   const [name, setName] = useState<string>("")
   const [avatar, setAvatar] = useState<string>("")
   const [isUpdating, setIsUpdating] = useState(false)
@@ -20,7 +20,7 @@ export default function AccountPage() {
   useEffect(() => {
     if (user) {
       setName(user.name || user.email?.split('@')[0] || "User")
-      setAvatar(user.avatar ? pb.files.getUrl(user, user.avatar) : "")
+      setAvatar(user.avatar || "")
     }
   }, [user])
 
@@ -37,20 +37,10 @@ export default function AccountPage() {
 
   const handleSave = async () => {
     if (!user) return
-    
     setIsUpdating(true)
     try {
-      const formData = new FormData()
-      formData.append('name', name)
-      
-      // If avatar is a data URL (new upload), convert to file
-      if (avatar && avatar.startsWith('data:')) {
-        const response = await fetch(avatar)
-        const blob = await response.blob()
-        formData.append('avatar', blob, 'avatar.jpg')
-      }
-      
-      await pb.collection('users').update(user.id, formData)
+      // Update via AuthContext local method
+      await updateProfile(name, avatar || undefined)
       alert("Profile updated successfully!")
     } catch (error) {
       console.error('Failed to update profile:', error)

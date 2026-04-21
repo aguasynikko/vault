@@ -1,8 +1,8 @@
 import { useMemo, useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { EyeIcon, DownloadIcon, StarIcon, FileIcon, ImageIcon, FolderIcon, XIcon, CheckSquareIcon, SquareIcon, StarOffIcon, FilterIcon, ChevronLeftIcon } from "lucide-react"
-import { usePocketBase } from "@/services/pocketbase-store"
-import type { ManagedFile, Folder } from "@/services/pocketbase-store"
+import { usePocketBase } from "@/services/filesys-store"
+import type { ManagedFile, Folder } from "@/services/filesys-store"
 import { Input } from "@/components/ui/input"
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuCheckboxItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuItem } from "@/components/ui/dropdown-menu"
 

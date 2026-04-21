@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react"
-import { usePocketBase } from "@/services/pocketbase-store"
-import type { ManagedFile } from "@/services/pocketbase-store"
+import { usePocketBase } from "@/services/filesys-store"
+import type { ManagedFile } from "@/services/filesys-store"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { ClockIcon, FileIcon, SearchIcon } from "lucide-react"
