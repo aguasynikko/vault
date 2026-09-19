@@ -468,6 +468,3 @@ export function useFileSystem() {
   if (!ctx) throw new Error("useFileSystem must be used within FileSystemProvider")
   return ctx
 }
-
-// Compatibility: expose the same hook name used by pages
-export const usePocketBase = useFileSystem

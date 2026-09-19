@@ -1,10 +1,10 @@
 import { useMemo, useState } from "react"
 import { SearchIcon, FileIcon, TrashIcon, StarIcon } from "lucide-react"
-import { usePocketBase } from "@/services/filesys-store"
+import { useFileSystem } from "@/services/filesys-store"
 import type { ManagedFile, Folder } from "@/services/filesys-store"
 
 export default function Search() {
-  const { files, trash, folders } = usePocketBase()
+  const { files, trash, folders } = useFileSystem()
   const [query, setQuery] = useState("")
 
   type ResultItem = { file: ManagedFile; source: "vault" | "trash" }

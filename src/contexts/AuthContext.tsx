@@ -45,7 +45,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       .select('id,email,name,avatar_url,created_at')
       .eq('id', uid)
       .single(),
-      15000,
+      30000,
     )
     if (error && error.code !== 'PGRST116') { // unexpected errors
       console.warn('profile fetch error', error)
@@ -166,12 +166,17 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       if (error) throw error
       const sUser = data.user
       if (!sUser) return
+      
+      // Try to create profile, but don't fail signup if it fails
       const { error: upsertErr } = await supabase.from('profiles').upsert({
         id: sUser.id,
         email,
         name: email.split('@')[0],
       })
-      if (upsertErr) console.warn('profile upsert error', upsertErr)
+      if (upsertErr) {
+        console.warn('profile upsert error', upsertErr)
+      }
+      
       try {
         const profile = await loadProfile(sUser.id, email)
         setUser(profile)
@@ -223,12 +228,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }
 
   const logout = async () => {
+    setUser(null)
     if (hasSupabase) {
-      await supabase.auth.signOut()
+      // Fire-and-forget the sign out request to avoid blocking the UI
+      supabase.auth.signOut().catch(e => console.warn('Sign out error:', e))
     } else {
       localStorage.removeItem('filesys/auth')
     }
-    setUser(null)
   }
 
   const loginWithGithub = async () => {

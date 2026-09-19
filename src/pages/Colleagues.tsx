@@ -5,13 +5,13 @@ import { Label } from "@/components/ui/label"
 import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover"
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from "@/components/ui/dropdown-menu"
 import { UsersIcon, MailIcon, UserPlusIcon, TrashIcon, MoreVerticalIcon, Share2Icon, FolderIcon, FileIcon } from "lucide-react"
-import { usePocketBase } from "@/services/filesys-store"
+import { useFileSystem } from "@/services/filesys-store"
 import type { ManagedFile, Colleague, ShareEntry, WorkspaceInvite } from "@/services/filesys-store"
 import { useAuth } from "@/contexts/AuthContext"
 
 export default function ColleaguesPage() {
 
-  const { files, folders, colleagues, addColleagueFriend, acceptColleagueRequest, rejectColleagueRequest, removeColleague, createShares, inviteToWorkspace, refreshData, colleaguesError } = usePocketBase() as {
+  const { files, folders, colleagues, addColleagueFriend, acceptColleagueRequest, rejectColleagueRequest, removeColleague, createShares, inviteToWorkspace, refreshData, colleaguesError } = useFileSystem() as {
     files: ManagedFile[]
     folders: { id: string; name: string; parentId?: string | null }[]
     colleagues: Colleague[]
@@ -40,16 +40,23 @@ export default function ColleaguesPage() {
   // Email search & add friend
   const [searchEmail, setSearchEmail] = useState("")
   const [searchOpen, setSearchOpen] = useState(false)
+  const [isAddingFriend, setIsAddingFriend] = useState(false)
   const isValidEmail = (e: string) => /.+@.+\..+/.test(e)
   const [newFriendName, setNewFriendName] = useState("")
 
   const addFriend = async () => {
-    const email = searchEmail.trim()
-    if (!isValidEmail(email)) return
-    const name = newFriendName.trim() || email.split("@")[0]
-    await addColleagueFriend(email, name)
-    await Promise.resolve(refreshData())
-    setSearchEmail(""); setNewFriendName(""); setSearchOpen(false)
+    try {
+      setIsAddingFriend(true)
+      const email = searchEmail.trim()
+      if (!isValidEmail(email)) return
+      const name = newFriendName.trim() || email.split("@")[0]
+      await addColleagueFriend(email, name)
+      setSearchEmail(""); setNewFriendName(""); setSearchOpen(false)
+    } catch (e) {
+      console.error('Error adding friend:', e)
+    } finally {
+      setIsAddingFriend(false)
+    }
   }
 
   // Share items with colleague
@@ -128,7 +135,7 @@ export default function ColleaguesPage() {
                 </div>
                 <div className="flex justify-end gap-2 pt-2">
                   <Button variant="ghost" onClick={() => { setSearchOpen(false); setSearchEmail(""); setNewFriendName("") }}>Cancel</Button>
-                  <Button onClick={addFriend} disabled={!isValidEmail(searchEmail)}>Send Request</Button>
+                  <Button onClick={addFriend} disabled={!isValidEmail(searchEmail) || isAddingFriend}>{isAddingFriend ? 'Sending...' : 'Send Request'}</Button>
                 </div>
               </div>
             </PopoverContent>

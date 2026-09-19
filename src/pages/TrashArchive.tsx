@@ -2,7 +2,7 @@ import { useMemo, useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { EyeIcon, RotateCcwIcon, TrashIcon, FileIcon, ImageIcon, FolderIcon, XIcon, CheckSquareIcon, SquareIcon, FilterIcon } from "lucide-react"
-import { usePocketBase } from "@/services/filesys-store"
+import { useFileSystem } from "@/services/filesys-store"
 import type { ManagedFile } from "@/services/filesys-store"
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuCheckboxItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuItem } from "@/components/ui/dropdown-menu"
 import { AlertDialog, AlertDialogTrigger, AlertDialogContent, AlertDialogHeader, AlertDialogTitle, AlertDialogDescription, AlertDialogFooter, AlertDialogCancel, AlertDialogAction } from "@/components/ui/alert-dialog"
@@ -17,7 +17,7 @@ function formatBytes(bytes: number) {
 }
 
 export default function TrashArchive() {
-  const { trash, setTrash, restoreFromTrash: restoreFromTrashPB, deleteFromTrashPermanently: deleteFromTrashPermanentlyPB } = usePocketBase()
+  const { trash, setTrash, restoreFromTrash: restoreFromTrashPB, deleteFromTrashPermanently: deleteFromTrashPermanentlyPB } = useFileSystem()
 
   const [searchQuery, setSearchQuery] = useState("")
   const [typeFilters, setTypeFilters] = useState<string[]>([])

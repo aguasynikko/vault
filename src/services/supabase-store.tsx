@@ -86,29 +86,30 @@ function SupabaseProviderInternal({ children }: { children: React.ReactNode }) {
       .select('id,name,folder_id,size,mime_type,is_favorite,trashed_at,created_at,updated_at,storage_path')
       .eq('user_id', user.id)
     if (!ierr && fis) {
-      const items: FileItem[] = []
-      for (const r of fis as any[]) {
-        let url = ''
-        if (r.storage_path) {
-          const signed = await supabase.storage.from('filesys').createSignedUrl(r.storage_path, 3600)
-          url = signed.data?.signedUrl || ''
-        }
-        items.push({
-          id: r.id,
-          name: r.name,
-          size: r.size ?? 0,
-          type: r.mime_type ?? 'application/octet-stream',
-          url,
-          lastModified: Date.parse(r.updated_at ?? r.created_at ?? new Date().toISOString()),
-          folderId: r.folder_id,
-          selected: false,
-          favorite: !!r.is_favorite,
-          createdAt: Date.parse(r.created_at ?? new Date().toISOString()),
-          openedAt: null,
-          nameModifiedAt: null,
-          storagePath: r.storage_path,
-        })
-      }
+      // Generate all signed URLs in parallel instead of sequentially
+      const signedUrls = await Promise.all(
+        (fis as any[]).map((r) =>
+          r.storage_path
+            ? supabase.storage.from('filesys').createSignedUrl(r.storage_path, 3600)
+            : Promise.resolve({ data: { signedUrl: null } })
+        )
+      )
+      
+      const items: FileItem[] = (fis as any[]).map((r, index) => ({
+        id: r.id,
+        name: r.name,
+        size: r.size ?? 0,
+        type: r.mime_type ?? 'application/octet-stream',
+        url: signedUrls[index]?.data?.signedUrl || '',
+        lastModified: Date.parse(r.updated_at ?? r.created_at ?? new Date().toISOString()),
+        folderId: r.folder_id,
+        selected: false,
+        favorite: !!r.is_favorite,
+        createdAt: Date.parse(r.created_at ?? new Date().toISOString()),
+        openedAt: null,
+        nameModifiedAt: null,
+        storagePath: r.storage_path,
+      }))
       setFiles(items)
     }
     try {
@@ -394,7 +395,7 @@ function SupabaseProviderInternal({ children }: { children: React.ReactNode }) {
       
       if (rerr) throw rerr
       const recipient = (Array.isArray(recs) && recs.length > 0) ? recs[0] : null
-      if (!recipient) throw new Error(`User with email "${email}" not found. Make sure they have signed up.`)
+      if (!recipient) throw new Error(`User with email "${email}" not found. Make sure they have signed up and completed their account setup.`)
       
       // Check if request already exists
       const { data: existing } = await supabase

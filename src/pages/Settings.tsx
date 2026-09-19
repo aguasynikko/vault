@@ -1,11 +1,11 @@
-import { usePocketBase } from "@/services/filesys-store"
+import { useFileSystem } from "@/services/filesys-store"
 import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
 import { ModeToggle } from "@/components/mode-toggle"
 import { SettingsIcon, TrashIcon } from "lucide-react"
 
 export default function SettingsPage() {
-  const { setFiles, setFolders, setTrash, setColleagues, setShares, setWorkspaceInvites } = usePocketBase()
+  const { setFiles, setFolders, setTrash, setColleagues, setShares, setWorkspaceInvites } = useFileSystem()
 
   const resetAllData = () => {
     const ok = confirm("This will clear all local app data (files, folders, shares, colleagues). Continue?")

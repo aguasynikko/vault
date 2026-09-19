@@ -1,5 +1,5 @@
 import React, { useCallback, useMemo, useRef, useState, useEffect } from "react"
-import { usePocketBase } from "@/services/filesys-store"
+import { useFileSystem } from "@/services/filesys-store"
 import {
   TrashIcon,
   EyeIcon,
@@ -95,7 +95,7 @@ export default function MyFiles() {
     moveFileToTrash: moveFileToTrashPB,
     moveFolderToTrash: moveFolderToTrashPB,
     compressFolderToZip: compressFolderToZipPB,
-  } = usePocketBase()
+  } = useFileSystem()
   const [currentFolderId, setCurrentFolderId] = useState<string | null>(null) // null = root (My Drive)
   const [previewId, setPreviewId] = useState<string | null>(null)
   const [newFolderName, setNewFolderName] = useState("")
